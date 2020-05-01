@@ -54,6 +54,24 @@ public class ExecuteSOQLTest {
     }
 
     @isTest
+    private static void testExecuteSOQLDateLiteral() {
+        Account acc = new Account(Name = 'Test Account');
+        insert acc;   
+
+        //Formatted date time
+        ExecuteSOQL.Requests requests = new ExecuteSOQL.Requests();
+        requests.soqlQuery = 'Select Id From Account Where CreatedDate = LAST_n_DAYS:14';
+
+        Test.startTest();
+        List<ExecuteSOQL.Results> results = ExecuteSOQL.getEligibleProducts(new List<ExecuteSOQL.Requests>{
+                requests
+        });
+        Test.stopTest();
+		System.assertEquals(1, results[0].sObjects.size());
+        System.assertEquals(acc.Id, results[0].sObjects[0].Id);
+    }
+
+    @isTest
     private static void testExecuteSOQLLimit() {        
         insert new List<Account>{new Account(Name = 'Test 3'), new Account(Name = 'Test 1'), new Account(Name = 'Test 2')};
         
